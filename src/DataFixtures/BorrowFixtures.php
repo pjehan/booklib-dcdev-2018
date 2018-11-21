@@ -19,12 +19,14 @@ class BorrowFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 20; $i++) {
             $borrow = new Borrow();
             $borrow->setBook($this->getReference('book-' . $faker->numberBetween(1, 20)));
-            $datestart = $faker->dateTime;
+            $datestart = $faker->dateTimeThisYear('now', 'Europe/Paris');
             $borrow->setDateStart($datestart);
             $borrow->setBoxFrom($this->getReference('box-' . $faker->numberBetween(1, 99)));
             if ($faker->boolean) {
                 $borrow->setBoxTo($this->getReference('box-' . $faker->numberBetween(1, 99)));
-                $borrow->setDateEnd($datestart->add(new \DateInterval('P' . $faker->numberBetween(1, 30) . 'D')));
+                $datend = clone $datestart;
+                $datend->modify("+" . $faker->numberBetween(1, 30) . " day");
+                $borrow->setDateEnd($datend);
             }
             $borrow->setUser($this->getReference('user-' . $faker->numberBetween(1, 20)));
             $manager->persist($borrow);

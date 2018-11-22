@@ -39,6 +39,18 @@ class BookRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
+    public function findLast(int $limit) : array
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        $qb = $qb->select('b', 'a')
+            ->innerJoin('b.author', 'a')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */

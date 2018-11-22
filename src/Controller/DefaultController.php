@@ -12,25 +12,30 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class DefaultController
  * @package App\Controller
- * @Route("/default")
  */
 class DefaultController extends BaseController
 {
+
+    /**
+     * @Route("/", name="homepage")
+     */
+    public function homepage()
+    {
+        return $this->render('default/homepage.html.twig');
+    }
+
     /**
      * @Route("/{nom}", name="default", methods={"GET"})
      */
     public function index(string $nom, Request $request)
     {
-        $author = $this->getDoctrine()->getRepository(Author::class)->findOneByLastname($nom);
+        $author = $this->getDoctrine()->getRepository(Author::class)->findOneBy(["lastname" => $nom]);
 
         if (!$author) {
             throw $this->createNotFoundException("Auteur introuvable!");
         }
 
-        echo $request->query->get('test');
-        die;
-
-        return new Response($author->getFirstname() . " " . $author->getLastname());
+        return $this->render("default/index.html.twig", ["author" => $author]);
     }
 
     /**
